@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Mmeyer2k\AesGcm;
 
+use Exception;
 use SensitiveParameter;
 
 class AesGcm
 {
-    public static function encrypt(string $plaintext, #[SensitiveParameter]string $key): string
+    public static function encrypt(string $plaintext, #[SensitiveParameter]string $key, string $aad = ''): string
     {
         $tag = '';
 
@@ -21,12 +22,13 @@ class AesGcm
             options: OPENSSL_RAW_DATA,
             iv: $ivr,
             tag: $tag,
+            aad: $aad,
         );
 
         return $tag . $ivr . $msg;
     }
 
-    public static function decrypt(string $ciphertext, #[SensitiveParameter] string $key): string
+    public static function decrypt(string $ciphertext, #[SensitiveParameter] string $key, string $aad = ''): string
     {
         $tag = substr($ciphertext, 0, 16);
 
@@ -39,10 +41,11 @@ class AesGcm
             options: OPENSSL_RAW_DATA,
             iv: $ivr,
             tag: $tag,
+            aad: $aad,
         );
 
         if ($msg === false) {
-            throw new \Exception('Could not decrypt message.');
+            throw new Exception('Could not decrypt message.');
         }
 
         return $msg;

@@ -7,5 +7,7 @@
             "Mmeyer2k\\AesGcm\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "php": "^8.2|^8.3"
+    }
 }
