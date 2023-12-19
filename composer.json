@@ -1,0 +1,11 @@
+{
+    "name": "mmeyer2k/php-aes-gcm",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mmeyer2k\\AesGcm\\": "src/"
+        }
+    },
+    "require": {}
+}
