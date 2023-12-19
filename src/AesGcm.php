@@ -18,7 +18,7 @@ class AesGcm
         $msg = openssl_encrypt(
             data: $plaintext,
             cipher_algo: 'aes-256-gcm',
-            passphrase: self::key($key, $ivr),
+            passphrase: self::key($key, $ivr, $aad),
             options: OPENSSL_RAW_DATA,
             iv: $ivr,
             tag: $tag,
@@ -37,7 +37,7 @@ class AesGcm
         $msg = openssl_decrypt(
             data: substr($ciphertext, 32),
             cipher_algo: 'aes-256-gcm',
-            passphrase: self::key($key, $ivr),
+            passphrase: self::key($key, $ivr, $aad),
             options: OPENSSL_RAW_DATA,
             iv: $ivr,
             tag: $tag,
@@ -51,12 +51,13 @@ class AesGcm
         return $msg;
     }
 
-    private static function key(#[SensitiveParameter]string $key, string $ivr): string
+    private static function key(#[SensitiveParameter]string $key, string $ivr, string $aad = ''): string
     {
         return hash_hkdf(
             algo: 'sha3-256',
             key: $key,
             length: 32,
+            info: $aad,
             salt: $ivr,
         );
     }

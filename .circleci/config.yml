@@ -1,0 +1,23 @@
+version: 2.1
+
+jobs:
+  php82:
+    docker:
+      - image: cimg/php:8.2
+    steps:
+      - checkout
+      - run: composer require phpunit/phpunit:^10.5
+      - run: php vendor/bin/phpunit
+  php83:
+    docker:
+      - image: cimg/php:8.3
+    steps:
+      - checkout
+      - run: composer require phpunit/phpunit:^10.5
+      - run: php vendor/bin/phpunit
+workflows:
+  version: 2
+  example-workflow:
+    jobs:
+      - php82
+      - php83

@@ -26,7 +26,7 @@ final class AesGcmTest extends TestCase
         AesGcm::decrypt(random_bytes(32), random_bytes(32));
     }
 
-    public function testAadAuthenticates(): void
+    public function testAadAuthentication(): void
     {
         $aad = 'authenticated meta data';
         $msg = 'secret message';
