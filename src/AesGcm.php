@@ -9,7 +9,11 @@ use SensitiveParameter;
 
 class AesGcm
 {
-    public static function encrypt(string $plaintext, #[SensitiveParameter]string $key, string $aad = ''): string
+    public static function encrypt(
+        #[SensitiveParameter] string $plaintext,
+        #[SensitiveParameter] string $key,
+        string                       $aad = ''
+    ): string
     {
         $tag = '';
 
@@ -28,7 +32,10 @@ class AesGcm
         return $tag . $ivr . $msg;
     }
 
-    public static function decrypt(string $ciphertext, #[SensitiveParameter] string $key, string $aad = ''): string
+    public static function decrypt(
+        string                       $ciphertext,
+        #[SensitiveParameter] string $key,
+        string                       $aad = ''): string
     {
         $tag = substr($ciphertext, 0, 16);
 
@@ -51,7 +58,11 @@ class AesGcm
         return $msg;
     }
 
-    private static function key(#[SensitiveParameter]string $key, string $ivr, string $aad = ''): string
+    private static function key(
+        #[SensitiveParameter] string $key,
+        string                       $ivr,
+        string                       $aad = ''
+    ): string
     {
         return hash_hkdf(
             algo: 'sha3-256',
