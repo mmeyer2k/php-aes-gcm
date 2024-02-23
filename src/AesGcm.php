@@ -33,7 +33,7 @@ class AesGcm
     }
 
     public static function decrypt(
-        string                       $ciphertext,
+        #[SensitiveParameter] string $ciphertext,
         #[SensitiveParameter] string $key,
         string                       $aad = ''): string
     {
@@ -60,7 +60,7 @@ class AesGcm
 
     private static function key(
         #[SensitiveParameter] string $key,
-        string                       $ivr,
+        #[SensitiveParameter] string $ivr,
         string                       $aad = ''
     ): string
     {
