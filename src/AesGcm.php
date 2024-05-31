@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mmeyer2k\AesGcm;
 
-use Exception;
 use SensitiveParameter;
 
 class AesGcm
@@ -36,13 +35,13 @@ class AesGcm
         #[SensitiveParameter] string $ciphertext,
         #[SensitiveParameter] string $key,
         #[SensitiveParameter] string $aad = ''
-    ): string
+    ): string|false
     {
         $tag = substr($ciphertext, 0, 16);
 
         $ivr = substr($ciphertext, 16, 16);
 
-        $msg = openssl_decrypt(
+        return openssl_decrypt(
             data: substr($ciphertext, 32),
             cipher_algo: 'aes-256-gcm',
             passphrase: self::key($key, $ivr, $aad),
@@ -51,12 +50,6 @@ class AesGcm
             tag: $tag,
             aad: $aad,
         );
-
-        if (false === $msg) {
-            throw new Exception('Could not decrypt message.');
-        }
-
-        return $msg;
     }
 
     private static function key(

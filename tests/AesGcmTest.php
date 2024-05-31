@@ -21,9 +21,11 @@ final class AesGcmTest extends TestCase
 
     public function testBadChecksum(): void
     {
-        $this->expectException(Exception::class);
+        $rnd = random_bytes(32);
 
-        AesGcm::decrypt(random_bytes(32), random_bytes(32));
+        $out = AesGcm::decrypt($rnd, $rnd);
+
+        $this->assertFalse($out);
     }
 
     public function testAadAuthentication(): void
@@ -38,8 +40,8 @@ final class AesGcmTest extends TestCase
 
         $this->assertSame($msg, $dec);
 
-        $this->expectException(Exception::class);
+        $broken = AesGcm::decrypt($enc, $key, $aad . ' contamination');
 
-        AesGcm::decrypt($enc, $key, $aad . ' contamination');
+        $this->assertFalse($broken);
     }
 }
