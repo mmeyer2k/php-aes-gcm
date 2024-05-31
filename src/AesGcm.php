@@ -35,7 +35,8 @@ class AesGcm
     public static function decrypt(
         #[SensitiveParameter] string $ciphertext,
         #[SensitiveParameter] string $key,
-        #[SensitiveParameter] string $aad = ''): string
+        #[SensitiveParameter] string $aad = ''
+    ): string
     {
         $tag = substr($ciphertext, 0, 16);
 
