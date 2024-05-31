@@ -12,7 +12,7 @@ class AesGcm
         #[SensitiveParameter] string $plaintext,
         #[SensitiveParameter] string $key,
         #[SensitiveParameter] string $aad = ''
-    ): string
+    ): string|false
     {
         $tag = '';
 
@@ -28,7 +28,7 @@ class AesGcm
             aad: $aad,
         );
 
-        return $tag . $ivr . $msg;
+        return $msg ? $tag . $ivr . $msg : false;
     }
 
     public static function decrypt(

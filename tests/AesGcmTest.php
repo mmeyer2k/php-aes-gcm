@@ -28,6 +28,13 @@ final class AesGcmTest extends TestCase
         $this->assertFalse($out);
     }
 
+    public function testBadKey(): void
+    {
+        $this->expectException(ValueError::class);
+
+        AesGcm::encrypt('AAAA', '');
+    }
+
     public function testAadAuthentication(): void
     {
         $aad = 'authenticated meta data';
