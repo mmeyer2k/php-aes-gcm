@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace Mmeyer2k\AesGcm;
 
+use Random\RandomException;
 use SensitiveParameter;
 
 class AesGcm
 {
+    /**
+     * @throws RandomException
+     * @throws AesGcmException
+     */
     public static function encrypt(
         #[SensitiveParameter] string $plaintext,
         #[SensitiveParameter] string $key,
         #[SensitiveParameter] string $aad = ''
-    ): string|false
+    ): string
     {
         $tag = '';
 
@@ -28,20 +33,27 @@ class AesGcm
             aad: $aad,
         );
 
-        return $msg ? $tag . $ivr . $msg : false;
+        if (false === $msg) {
+            throw new AesGcmException;
+        }
+
+        return $tag . $ivr . $msg;
     }
 
+    /**
+     * @throws AesGcmException
+     */
     public static function decrypt(
         #[SensitiveParameter] string $ciphertext,
         #[SensitiveParameter] string $key,
         #[SensitiveParameter] string $aad = ''
-    ): string|false
+    ): string
     {
         $tag = substr($ciphertext, 0, 16);
 
         $ivr = substr($ciphertext, 16, 16);
 
-        return openssl_decrypt(
+        $msg = openssl_decrypt(
             data: substr($ciphertext, 32),
             cipher_algo: 'aes-256-gcm',
             passphrase: self::key($key, $ivr, $aad),
@@ -50,6 +62,12 @@ class AesGcm
             tag: $tag,
             aad: $aad,
         );
+
+        if (false === $msg) {
+            throw new AesGcmException;
+        }
+
+        return $msg;
     }
 
     private static function key(

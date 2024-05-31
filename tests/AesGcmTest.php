@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Mmeyer2k\AesGcm\AesGcmException;
 use \PHPUnit\Framework\TestCase;
 use \Mmeyer2k\AesGcm\AesGcm;
 
@@ -23,9 +24,9 @@ final class AesGcmTest extends TestCase
     {
         $rnd = random_bytes(32);
 
-        $out = AesGcm::decrypt($rnd, $rnd);
+        $this->expectException(AesGcmException::class);
 
-        $this->assertFalse($out);
+        AesGcm::decrypt($rnd, $rnd);
     }
 
     public function testBadKey(): void
@@ -47,8 +48,8 @@ final class AesGcmTest extends TestCase
 
         $this->assertSame($msg, $dec);
 
-        $broken = AesGcm::decrypt($enc, $key, $aad . ' contamination');
+        $this->expectException(AesGcmException::class);
 
-        $this->assertFalse($broken);
+        AesGcm::decrypt($enc, $key, $aad . ' contamination');
     }
 }
