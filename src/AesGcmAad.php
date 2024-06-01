@@ -6,13 +6,6 @@ namespace Mmeyer2k\AesGcm;
 
 class AesGcmAad
 {
-    /**
-     * @param string $msg
-     * @param string $key
-     * @param string $aad
-     * @return string
-     * @throws AesGcmException
-     */
     public static function encrypt(string $msg, string $key, string $aad): string
     {
         $msg = AesGcm::encrypt($msg, $key, $aad);
@@ -22,12 +15,6 @@ class AesGcmAad
         return $msg . $aad . pack('N', $len);
     }
 
-    /**
-     * @param string $msg
-     * @param string $key
-     * @return array<string, string>
-     * @throws AesGcmException
-     */
     public static function decrypt(string $msg, string $key): array
     {
         $len = unpack('N', substr($msg, -4))[1];
