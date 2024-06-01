@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace Mmeyer2k\AesGcm;
 
-use Random\RandomException;
 use SensitiveParameter;
 
 class AesGcm
 {
-    /**
-     * @throws RandomException
-     * @throws AesGcmException
-     */
     public static function encrypt(
         #[SensitiveParameter] string $plaintext,
         #[SensitiveParameter] string $key,
@@ -40,9 +35,6 @@ class AesGcm
         return $tag . $ivr . $msg;
     }
 
-    /**
-     * @throws AesGcmException
-     */
     public static function decrypt(
         #[SensitiveParameter] string $ciphertext,
         #[SensitiveParameter] string $key,
