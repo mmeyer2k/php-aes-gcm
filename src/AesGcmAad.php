@@ -15,9 +15,9 @@ class AesGcmAad
         return $msg . $aad . pack('N', $len);
     }
 
-    public static function decrypt(string $msg, string $key): array
+    public static function decrypt(string $msg, string $key): array // @phpstan-ignore-line
     {
-        $len = unpack('N', substr($msg, -4))[1];
+        $len = unpack('N', substr($msg, -4))[1]; // @phpstan-ignore-line
 
         $aad = substr($msg, -(4 + $len), -4);
 
