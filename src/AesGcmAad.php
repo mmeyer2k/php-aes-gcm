@@ -6,7 +6,11 @@ namespace Mmeyer2k\AesGcm;
 
 class AesGcmAad
 {
-    public static function encrypt(string $msg, string $key, string $aad): string
+    public static function encrypt(
+        #[SensitiveParameter] string $msg,
+        #[SensitiveParameter] string $key,
+        #[SensitiveParameter] string $aad,
+    ): string
     {
         $msg = AesGcm::encrypt($msg, $key, $aad);
 
@@ -15,7 +19,10 @@ class AesGcmAad
         return $msg . $aad . pack('N', $len);
     }
 
-    public static function decrypt(string $msg, string $key): array // @phpstan-ignore-line
+    public static function decrypt(
+        #[SensitiveParameter] string $msg,
+        #[SensitiveParameter] string $key,
+    ): array // @phpstan-ignore-line
     {
         $len = unpack('N', substr($msg, -4))[1]; // @phpstan-ignore-line
 
