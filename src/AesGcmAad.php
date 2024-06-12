@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Mmeyer2k\AesGcm;
 
+use SensitiveParameter;
+
 class AesGcmAad
 {
     public static function encrypt(
@@ -19,10 +21,10 @@ class AesGcmAad
         return $msg . $aad . pack('N', $len);
     }
 
-    public static function decrypt(
+    public static function decrypt( // @phpstan-ignore-line
         #[SensitiveParameter] string $msg,
         #[SensitiveParameter] string $key,
-    ): array // @phpstan-ignore-line
+    ): array
     {
         $len = unpack('N', substr($msg, -4))[1]; // @phpstan-ignore-line
 

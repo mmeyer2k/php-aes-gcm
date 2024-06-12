@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run: composer require phpunit/phpunit phpstan/phpstan --dev
       - run: php vendor/bin/phpunit
-      - run: php vendor/bin/phpstan analyze --level=9 src
+      - run: php vendor/bin/phpstan analyze
   php83:
     docker:
       - image: cimg/php:8.3
@@ -16,11 +16,11 @@ jobs:
       - checkout
       - run: composer require phpunit/phpunit phpstan/phpstan --dev
       - run: php vendor/bin/phpunit
-      - run: php vendor/bin/phpstan analyze --level=9 src
+      - run: php vendor/bin/phpstan analyze
 
 workflows:
   version: 2
-  example-workflow:
+  workflow:
     jobs:
       - php82
       - php83
