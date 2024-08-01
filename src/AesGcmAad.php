@@ -9,9 +9,9 @@ use SensitiveParameter;
 class AesGcmAad
 {
     public static function encrypt(
-        #[SensitiveParameter] string $msg,
-        #[SensitiveParameter] string $key,
-        #[SensitiveParameter] string $aad,
+        string $msg,
+        string $key,
+        string $aad,
     ): string
     {
         $msg = AesGcm::encrypt($msg, $key, $aad);
@@ -22,8 +22,8 @@ class AesGcmAad
     }
 
     public static function decrypt( // @phpstan-ignore-line
-        #[SensitiveParameter] string $msg,
-        #[SensitiveParameter] string $key,
+        string $msg,
+        string $key,
     ): array
     {
         $len = unpack('N', substr($msg, -4))[1]; // @phpstan-ignore-line
