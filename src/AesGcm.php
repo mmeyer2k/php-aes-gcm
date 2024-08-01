@@ -9,9 +9,9 @@ use SensitiveParameter;
 class AesGcm
 {
     public static function encrypt(
-        #[SensitiveParameter] string $plaintext,
-        #[SensitiveParameter] string $key,
-        #[SensitiveParameter] string $aad = ''
+        string $plaintext,
+        string $key,
+        string $aad = ''
     ): string
     {
         $tag = '';
@@ -19,13 +19,13 @@ class AesGcm
         $ivr = random_bytes(16);
 
         $msg = openssl_encrypt(
-            data: $plaintext,
-            cipher_algo: 'aes-256-gcm',
-            passphrase: self::key($key, $ivr, $aad),
-            options: OPENSSL_RAW_DATA,
-            iv: $ivr,
-            tag: $tag,
-            aad: $aad,
+            $plaintext,
+            'aes-256-gcm',
+            self::key($key, $ivr, $aad),
+            OPENSSL_RAW_DATA,
+            $ivr,
+            $tag,
+            $aad,
         );
 
         if (false === $msg) {
@@ -36,9 +36,9 @@ class AesGcm
     }
 
     public static function decrypt(
-        #[SensitiveParameter] string $ciphertext,
-        #[SensitiveParameter] string $key,
-        #[SensitiveParameter] string $aad = ''
+        string $ciphertext,
+        string $key,
+        string $aad = ''
     ): string
     {
         $tag = substr($ciphertext, 0, 16);
@@ -46,13 +46,13 @@ class AesGcm
         $ivr = substr($ciphertext, 16, 16);
 
         $msg = openssl_decrypt(
-            data: substr($ciphertext, 32),
-            cipher_algo: 'aes-256-gcm',
-            passphrase: self::key($key, $ivr, $aad),
-            options: OPENSSL_RAW_DATA,
-            iv: $ivr,
-            tag: $tag,
-            aad: $aad,
+            substr($ciphertext, 32),
+            'aes-256-gcm',
+            self::key($key, $ivr, $aad),
+            OPENSSL_RAW_DATA,
+            $ivr,
+            $tag,
+            $aad,
         );
 
         if (false === $msg) {
@@ -63,17 +63,17 @@ class AesGcm
     }
 
     private static function key(
-        #[SensitiveParameter] string $key,
-        #[SensitiveParameter] string $ivr,
-        #[SensitiveParameter] string $aad = ''
+        string $key,
+        string $ivr,
+        string $aad = ''
     ): string
     {
         return hash_hkdf(
-            algo: 'sha3-256',
-            key: $key,
-            length: 32,
-            info: $aad,
-            salt: $ivr,
+            'sha3-256',
+            $key,
+            32,
+            $aad,
+            $ivr,
         );
     }
 }
