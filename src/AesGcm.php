@@ -11,7 +11,7 @@ class AesGcm
     public static function encrypt(
         #[SensitiveParameter] string $plaintext,
         #[SensitiveParameter] string $key,
-        #[SensitiveParameter] string $aad = ''
+        #[SensitiveParameter] string $aad = '',
     ): string
     {
         $tag = '';
@@ -38,7 +38,7 @@ class AesGcm
     public static function decrypt(
         #[SensitiveParameter] string $ciphertext,
         #[SensitiveParameter] string $key,
-        #[SensitiveParameter] string $aad = ''
+        #[SensitiveParameter] string $aad = '',
     ): string
     {
         $tag = substr($ciphertext, 0, 16);
@@ -65,7 +65,7 @@ class AesGcm
     private static function key(
         #[SensitiveParameter] string $key,
         #[SensitiveParameter] string $ivr,
-        #[SensitiveParameter] string $aad = ''
+        #[SensitiveParameter] string $aad = '',
     ): string
     {
         return hash_hkdf(
