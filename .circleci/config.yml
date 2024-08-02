@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  php82:
+  php74:
     docker:
       - image: cimg/php:7.4
     steps:
