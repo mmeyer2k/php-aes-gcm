@@ -3,15 +3,7 @@ version: 2.1
 jobs:
   php82:
     docker:
-      - image: cimg/php:8.2
-    steps:
-      - checkout
-      - run: composer require phpunit/phpunit phpstan/phpstan --dev
-      - run: php vendor/bin/phpunit
-      - run: php vendor/bin/phpstan analyze
-  php83:
-    docker:
-      - image: cimg/php:8.3
+      - image: cimg/php:7.4
     steps:
       - checkout
       - run: composer require phpunit/phpunit phpstan/phpstan --dev
@@ -22,5 +14,4 @@ workflows:
   version: 2
   workflow:
     jobs:
-      - php82
-      - php83
+      - php7.4
