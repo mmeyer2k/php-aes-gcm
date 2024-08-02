@@ -31,7 +31,7 @@ final class AesGcmTest extends TestCase
 
     public function testBadKey(): void
     {
-        $this->expectException();
+        $this->expectException(ValueError::class);
 
         AesGcm::encrypt('AAAA', '');
     }
