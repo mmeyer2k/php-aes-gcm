@@ -72,8 +72,8 @@ class AesGcm
             algo: 'sha3-256',
             key: $key,
             length: 32,
-            info: $aad,
-            salt: $ivr,
+            info: $aad . $ivr,
+            salt: '' // intentionally empty,
         );
     }
 }
