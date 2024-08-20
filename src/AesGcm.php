@@ -101,7 +101,7 @@ class AesGcm
     {
         $key = base64_decode($key);
 
-        if (strlen($key) !== SODIUM_CRYPTO_AEAD_AES256GCM_KEYBYTES) {
+        if (strlen($key) !== 32) {
             throw new Exception("AESGcm: key must be 32 bytes");
         }
 
