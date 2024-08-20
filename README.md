@@ -62,13 +62,13 @@ $dec = $aes->decrypt($enc, $aad);
 
 Supply an array of rotated keys which will be attempted if the primary key fails to decrypt the ciphertext.
 ```php
-$aes = new \Mmeyer2k\AesGcm\AesGcm($key);
-
-$aes->rotated = [
+$old = [
     'key 1',
     'key 2',
     'key 3',
 ];
+
+$aes = new \Mmeyer2k\AesGcm\AesGcm($key, $old);
 
 $dec = $aes->decrypt($ciphertext);
 ```
