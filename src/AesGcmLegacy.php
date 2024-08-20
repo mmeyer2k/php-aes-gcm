@@ -14,8 +14,8 @@ class AesGcm
     public array $rotated = [];
     public bool $fallback = false;
 
-    private $key;
-    private $context;
+    private string $key;
+    private string $context;
 
     public function __construct(
         string $key,
