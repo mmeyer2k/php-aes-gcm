@@ -11,11 +11,6 @@ To take advantage of the cool features in PHP 8.2+, install from the main branch
 composer require "mmeyer2k/php-aes-gcm:dev-main"
 ```
 
-If you need to support PHP versions prior to 8.2, install from the `legacy` branch.
-```bash
-composer require "mmeyer2k/php-aes-gcm:dev-legacy"
-```
-
 ## Basic usage
 
 ```php
