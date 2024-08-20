@@ -9,15 +9,15 @@ use SensitiveParameter;
 
 class AesGcm
 {
-    /**
-     * @var string[] $rotated
-     */
-    public array $rotated = [];
     public bool $fallback = false;
 
+    /**
+     * @param string $key
+     * @param string[] $rotated
+     */
     public function __construct(
         #[SensitiveParameter] private readonly string $key,
-        #[SensitiveParameter] private readonly string $context = '',
+        #[SensitiveParameter] private readonly array $rotated = [],
     )
     {
     }
@@ -27,7 +27,7 @@ class AesGcm
         #[SensitiveParameter] string $aad = '',
     ): string
     {
-        $ivr = random_bytes(16);
+        $ivr = random_bytes(12);
 
         $tag = '';
 
@@ -35,16 +35,16 @@ class AesGcm
             $msg = sodium_crypto_aead_aes256gcm_encrypt(
                 message: $plaintext,
                 additional_data: $aad,
-                nonce: substr($ivr, -12),
-                key: $this->hkdf($this->key, $ivr),
+                nonce: $ivr,
+                key: $this->key,
             );
         } else {
             $msg = openssl_encrypt(
                 data: $plaintext,
                 cipher_algo: 'aes-256-gcm',
-                passphrase: $this->hkdf($this->key, $ivr),
+                passphrase: $this->key,
                 options: OPENSSL_RAW_DATA,
-                iv: substr($ivr, -12),
+                iv: $ivr,
                 tag: $tag,
                 aad: $aad,
             );
@@ -62,25 +62,25 @@ class AesGcm
         #[SensitiveParameter] string $aad = '',
     ): string
     {
-        $ivr = substr($ciphertext, 0, 16);
+        $ivr = substr($ciphertext, 0, 12);
 
         foreach ([$this->key, ...$this->rotated] as $key) {
             if (sodium_crypto_aead_aes256gcm_is_available() && !$this->fallback) {
                 $msg = sodium_crypto_aead_aes256gcm_decrypt(
-                    ciphertext: substr($ciphertext, 16),
+                    ciphertext: substr($ciphertext, 12),
                     additional_data: $aad,
-                    nonce: substr($ivr, -12),
-                    key: $this->hkdf($key, $ivr),
+                    nonce: $ivr,
+                    key: $key,
                 );
             } else {
                 $tag = substr($ciphertext, -16);
 
                 $msg = openssl_decrypt(
-                    data: substr($ciphertext, 16, -16),
+                    data: substr($ciphertext, 12, -16),
                     cipher_algo: 'aes-256-gcm',
-                    passphrase: $this->hkdf($key, $ivr),
+                    passphrase: $key,
                     options: OPENSSL_RAW_DATA,
-                    iv: substr($ivr, -12),
+                    iv: $ivr,
                     tag: $tag,
                     aad: $aad,
                 );
@@ -92,25 +92,5 @@ class AesGcm
         }
 
         throw new Exception("AESGcm: Failed to decrypt message");
-    }
-
-    private function hkdf(
-        #[SensitiveParameter] string $key,
-        #[SensitiveParameter] string $ivr,
-    ): string
-    {
-        $key = base64_decode($key);
-
-        if (strlen($key) !== 32) {
-            throw new Exception("AESGcm: key must be 32 bytes");
-        }
-
-        return hash_hkdf(
-            algo: 'sha3-256',
-            key: $key,
-            length: 0,
-            info: $this->context . $ivr,
-            salt: '' // intentionally blank
-        );
     }
 }

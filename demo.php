@@ -2,11 +2,9 @@
 
 require 'vendor/autoload.php';
 
-$key = '\+YoUr\+32\+ByTe\+BaSe64\+EnCoDeD\+kEy\+GoEs\+HeRe\+';
-
 $msg = 'Hello World!';
 
-$aes = new \Mmeyer2k\AesGcm\AesGcm($key);
+$aes = new \Mmeyer2k\AesGcm\AesGcm('[ ... your secret key goes here ...]');
 
 $enc = $aes->encrypt($msg);
 

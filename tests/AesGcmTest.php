@@ -9,7 +9,7 @@ final class AesGcmTest extends TestCase
 {
     private static function gcmConstrcutor(): AesGcm
     {
-        $key = base64_encode(random_bytes(32));
+        $key = random_bytes(32);
 
         return new AesGcm($key);
     }
@@ -69,20 +69,18 @@ final class AesGcmTest extends TestCase
 
     public function testKeyRotation(): void
     {
-        $key1 = base64_encode(random_bytes(32));
-        $key2 = base64_encode(random_bytes(32));
-        $key3 = base64_encode(random_bytes(32));
+        $key1 = random_bytes(32);
+        $key2 = random_bytes(32);
+        $key3 = random_bytes(32);
 
         $gcm = new AesGcm($key1);
         $enc = $gcm->encrypt('Hello World!');
 
-        $gcm = new AesGcm($key2);
-        $gcm->rotated = [$key1];
+        $gcm = new AesGcm($key2, [$key1]);
         $dec = $gcm->decrypt($enc);
         $this->assertEquals('Hello World!', $dec);
 
-        $gcm = new AesGcm($key3);
-        $gcm->rotated = [$key1, $key2];
+        $gcm = new AesGcm($key3, [$key1, $key2]);
         $dec = $gcm->decrypt($enc);
         $this->assertEquals('Hello World!', $dec);
     }

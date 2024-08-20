@@ -12,18 +12,18 @@ class AesGcm
      * @var string[] $rotated
      */
     public array $rotated = [];
-    public bool $fallback = false;
 
     private string $key;
-    private string $context;
+
+    public bool $fallback = false;
 
     public function __construct(
         string $key,
-        string $context = ''
+        array $rotated = []
     )
     {
         $this->key = $key;
-        $this->context = $context;
+        $this->rotated = $rotated;
     }
 
     public function encrypt(
@@ -39,16 +39,16 @@ class AesGcm
             $msg = sodium_crypto_aead_aes256gcm_encrypt(
                 $plaintext,
                 $aad,
-                substr($ivr, -12),
-                $this->hkdf($this->key, $ivr),
+                $ivr,
+                $this->key,
             );
         } else {
             $msg = openssl_encrypt(
                 $plaintext,
                 'aes-256-gcm',
-                $this->hkdf($this->key, $ivr),
+                $this->key,
                 OPENSSL_RAW_DATA,
-                substr($ivr, -12),
+                $ivr,
                 $tag,
                 $aad,
             );
@@ -74,7 +74,7 @@ class AesGcm
                     substr($ciphertext, 16),
                     $aad,
                     substr($ivr, -12),
-                    $this->hkdf($key, $ivr),
+                    $key,
                 );
             } else {
                 $tag = substr($ciphertext, -16);
@@ -82,7 +82,7 @@ class AesGcm
                 $msg = openssl_decrypt(
                     substr($ciphertext, 16, -16),
                     'aes-256-gcm',
-                    $this->hkdf($key, $ivr),
+                    $key,
                     OPENSSL_RAW_DATA,
                     substr($ivr, -12),
                     $tag,
@@ -96,25 +96,5 @@ class AesGcm
         }
 
         throw new Exception("AESGcm: Failed to decrypt message");
-    }
-
-    private function hkdf(
-        string $key,
-        string $ivr
-    ): string
-    {
-        $key = base64_decode($key);
-
-        if (strlen($key) !== 32) {
-            throw new Exception("AESGcm: key must be 32 bytes");
-        }
-
-        return hash_hkdf(
-            'sha3-256',
-            $key,
-            0,
-            $this->context . $ivr,
-            '' // intentionally blank
-        );
     }
 }

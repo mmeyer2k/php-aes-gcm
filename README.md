@@ -44,21 +44,6 @@ head -c 32 /dev/urandom | base64 -w 0 | xargs echo
 
 ## Other Usages
 
-### Key Contexts
-
-Key contextualization allows for one key to be used in many domains.
-Diversity of contexts help lowers the rate of key exhaustion.
-```php
-$aes = new \Mmeyer2k\AesGcm\AesGcm($key, 'sessions');
-// or...
-$aes = new \Mmeyer2k\AesGcm\AesGcm($key, 'passport photos');
-```
-
-Serialized contexts offer the highest protection, ensuring that key collisions happen near the theoretical minimum.
-```php
-$aes = new \Mmeyer2k\AesGcm\AesGcm($key, "document:$id");
-```
-
 ### Additional Authenticated Data (AAD)
 
 AAD data is extra information that is authenticated but unencrypted.
