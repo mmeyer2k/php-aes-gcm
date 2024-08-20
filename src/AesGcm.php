@@ -29,6 +29,8 @@ class AesGcm
     {
         $ivr = random_bytes(16);
 
+        $tag = '';
+
         if (sodium_crypto_aead_aes256gcm_is_available() && !$this->fallback) {
             $msg = sodium_crypto_aead_aes256gcm_encrypt(
                 message: $plaintext,
@@ -36,21 +38,21 @@ class AesGcm
                 nonce: substr($ivr, -12),
                 key: $this->hkdf($this->key, $ivr),
             );
-
-            return $ivr . $msg;
+        } else {
+            $msg = openssl_encrypt(
+                data: $plaintext,
+                cipher_algo: 'aes-256-gcm',
+                passphrase: $this->hkdf($this->key, $ivr),
+                options: OPENSSL_RAW_DATA,
+                iv: substr($ivr, -12),
+                tag: $tag,
+                aad: $aad,
+            );
         }
 
-        $tag = '';
-
-        $msg = openssl_encrypt(
-            data: $plaintext,
-            cipher_algo: 'aes-256-gcm',
-            passphrase: $this->hkdf($this->key, $ivr),
-            options: OPENSSL_RAW_DATA,
-            iv: substr($ivr, -12),
-            tag: $tag,
-            aad: $aad,
-        );
+        if (false === $msg) {
+            throw new Exception("AESGcm: Failed to encrypt message");
+        }
 
         return $ivr . $msg . $tag;
     }
