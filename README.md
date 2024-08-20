@@ -28,6 +28,8 @@ $aes = new \Mmeyer2k\AesGcm\AesGcm($key);
 $enc = $aes->encrypt($msg);
 
 $dec = $aes->decrypt($enc);
+
+echo $dec;
 ```
 
 ## Keys

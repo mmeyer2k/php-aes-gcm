@@ -27,13 +27,13 @@ class AesGcm
         #[SensitiveParameter] string $aad = '',
     ): string
     {
-        $ivr = random_bytes(12);
+        $ivr = random_bytes(16);
 
         if (sodium_crypto_aead_aes256gcm_is_available() && !$this->fallback) {
             $msg = sodium_crypto_aead_aes256gcm_encrypt(
                 message: $plaintext,
                 additional_data: $aad,
-                nonce: $ivr,
+                nonce: substr($ivr, -12),
                 key: $this->hkdf($this->key, $ivr),
             );
 
@@ -47,7 +47,7 @@ class AesGcm
             cipher_algo: 'aes-256-gcm',
             passphrase: $this->hkdf($this->key, $ivr),
             options: OPENSSL_RAW_DATA,
-            iv: $ivr,
+            iv: substr($ivr, -12),
             tag: $tag,
             aad: $aad,
         );
@@ -60,25 +60,25 @@ class AesGcm
         #[SensitiveParameter] string $aad = '',
     ): string
     {
-        $ivr = substr($ciphertext, 0, 12);
+        $ivr = substr($ciphertext, 0, 16);
 
         foreach ([$this->key, ...$this->rotated] as $key) {
             if (sodium_crypto_aead_aes256gcm_is_available() && !$this->fallback) {
                 $msg = sodium_crypto_aead_aes256gcm_decrypt(
-                    ciphertext: substr($ciphertext, 12),
+                    ciphertext: substr($ciphertext, 16),
                     additional_data: $aad,
-                    nonce: $ivr,
+                    nonce: substr($ivr, -12),
                     key: $this->hkdf($key, $ivr),
                 );
             } else {
                 $tag = substr($ciphertext, -16);
 
                 $msg = openssl_decrypt(
-                    data: substr($ciphertext, 12, -16),
+                    data: substr($ciphertext, 16, -16),
                     cipher_algo: 'aes-256-gcm',
                     passphrase: $this->hkdf($key, $ivr),
                     options: OPENSSL_RAW_DATA,
-                    iv: $ivr,
+                    iv: substr($ivr, -12),
                     tag: $tag,
                     aad: $aad,
                 );
