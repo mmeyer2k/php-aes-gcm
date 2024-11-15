@@ -17,7 +17,7 @@ class AesGcm
      */
     public function __construct(
         #[SensitiveParameter] private readonly string $key,
-        #[SensitiveParameter] private readonly array $rotated = [],
+        #[SensitiveParameter] private readonly array $rotated,
     )
     {
     }
