@@ -11,7 +11,7 @@ class AesGcm
     /**
      * @var string[] $rotated
      */
-    public array $rotated;
+    public array $rotated = [];
 
     private string $key;
 
@@ -19,7 +19,7 @@ class AesGcm
 
     public function __construct(
         string $key,
-        array $rotated
+        array $rotated = []
     )
     {
         $this->key = $key;
