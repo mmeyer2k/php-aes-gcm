@@ -60,7 +60,9 @@ $dec = $aes->decrypt($enc, $aad);
 
 ### Native Key Rotation
 
-Supply an array of rotated keys which will be attempted if the primary key fails to decrypt the ciphertext.
+To rotate keys, pass an array of key strings into the constructor.
+The first key (index 0) will be used for encryption.
+All keys will be attempted when decrypting.
 ```php
 $old = [
     'key 1',
@@ -68,7 +70,7 @@ $old = [
     'key 3',
 ];
 
-$aes = new \Mmeyer2k\AesGcm\AesGcm($key, $old);
+$aes = new \Mmeyer2k\AesGcm\AesGcm($keys);
 
 $dec = $aes->decrypt($ciphertext);
 ```
